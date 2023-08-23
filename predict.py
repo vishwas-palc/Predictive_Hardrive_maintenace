@@ -7,11 +7,11 @@ from sklearn.metrics import precision_recall_curve
 import numpy as np
 from sklearn.svm import OneClassSVM
 # Load the .npy file
-npy_file_path = 'path_to_your_file.npy'
+npy_file_path = 'tain_data_array.npy'
 data = np.load(npy_file_path)
 
 # Define the CSV file path
-csv_file_path = 'converted_data.csv'
+csv_file_path = '/data/train/tain_data_array.csv'
 
 # Write the data to the CSV file
 with open(csv_file_path, 'w', newline='') as csv_file:
