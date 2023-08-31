@@ -56,14 +56,14 @@ y = df_failure["failure"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Load or train the One-Class SVM model
-#load_saved_model = False  # Change this to True if you want to load a saved model
+
 
 """if load_saved_model:
     loaded_model = joblib.load('/content/sample_data/trained model/one_class_svm_model_2021.pkl')
 else:"""
 one_class_svm_model = OneClassSVM(nu=0.009)
 one_class_svm_model.fit(X_train)
-joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model_2021.pkl')  # Save the trained model
+joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model.pkl')  # Save the trained model
 
 """# Predict anomalies on the test data
 if load_saved_model:
