@@ -11,7 +11,7 @@ import joblib
 
 
 # Get a list of all CSV files in the directory
-file_paths = glob.glob('/content/sample_data/*.csv')
+file_paths = glob.glob('/train/*.csv')
 
 # Initialize an empty list to store DataFrames
 dfs = []
@@ -63,7 +63,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 else:"""
 one_class_svm_model = OneClassSVM(nu=0.009)
 one_class_svm_model.fit(X_train)
-joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model_2021.pkl')  # Save the trained model
+joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model.pkl')  # Save the trained model
 
 """# Predict anomalies on the test data
 if load_saved_model:
