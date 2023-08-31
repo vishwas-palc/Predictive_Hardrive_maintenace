@@ -11,7 +11,7 @@ import joblib
 
 
 # Get a list of all CSV files in the directory
-file_paths = glob.glob('/train data/train data_2022/*.csv')
+file_paths = glob.glob('/train data/train data_2023/*.csv')
 
 # Initialize an empty list to store DataFrames
 dfs = []

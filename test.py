@@ -11,7 +11,7 @@ years = list(range(2013, 2024))  # Update the range according to your years
 one_class_svm_model = joblib.load('/trained model/one_class_svm_model.pkl')
 
 # Create the directory if it doesn't exist
-output_directory = '/testing results/2022/'
+output_directory = '/testing results/2023/'
 os.makedirs(output_directory, exist_ok=True)
 
 for year in years:
