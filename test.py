@@ -47,10 +47,10 @@ for year in years:
     recall = recall_score(y_test, y_year_prediction)
     f1 = f1_score(y_test, y_year_prediction)
     
-    print("Anomaly Detection Accuracy:", accuracy)
-    print("Anomaly Detection Precision:", precision)
-    print("Anomaly Detection Recall:", recall)
-    print("Anomaly Detection F1-score:", f1)
+    print(f"Anomaly Detection of year {year} Accuracy:", accuracy)
+    print(f"Anomaly Detection of year {year} Precision:", precision)
+    print(f"Anomaly Detection of year {year} Recall:", recall)
+    print(f"Anomaly Detection of year {year} F1-score:", f1)
 
     pivot_table = df_year_latest.pivot_table(index='failure', columns='predicted_failure', aggfunc='size', fill_value=0)
     sns.set_palette("viridis")
