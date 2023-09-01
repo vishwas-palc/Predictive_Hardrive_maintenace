@@ -15,7 +15,7 @@ output_directory = 'testing results/2015/'
 os.makedirs(output_directory, exist_ok=True)
 
 for year in years:
-    file_paths = glob.glob(f'/test data_{year}/*.csv')
+    file_paths = glob.glob(f'test data/test data_{year}/*.csv')
 
     dfs_year = []
 
