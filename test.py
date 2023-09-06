@@ -70,7 +70,7 @@ anomaly_predictions_year = one_class_svm_model.predict(x_year)
 result_df = pd.DataFrame({'_id': df_year_latest['_id'], 'predicted_failure': anomaly_predictions_year})
 
 # Rename the 'predicted_failure' column values
-result_df['predicted_failure'] = result_df['predicted_failure'].apply(lambda x: 'critical' if x == 1 else 'not critical')
+result_df['predicted_failure'] = result_df['predicted_failure'].apply(lambda x: 'not critical' if x == 1 else 'critical')
 
 # Save the result DataFrame as a CSV file (optional)
 result_csv_file = os.path.join(output_directory, f'predicted_failure_{year}.csv')
