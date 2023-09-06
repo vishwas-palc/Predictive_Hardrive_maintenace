@@ -5,13 +5,52 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import joblib
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from bson import ObjectId
+
+# MongoDB server connection parameters
+host = '172.27.1.162'  # Change this to your MongoDB server host
+port = 27017        # Change this to your MongoDB server port
+database_name = 'SMART'
+collection_name = 'sda'
+username = 'mongoadmin'
+password = 'bdung'
+
+# Connect to the MongoDB server with authentication
+client = pymongo.MongoClient(host, port, username=username, password=password)
+
+# Print information about the MongoDB connection
+print(f'Connected to MongoDB server at {host}:{port} as user {username}')
+
+# Access the specified database and collection
+db = client[database_name]
+collection = db[collection_name]
+
+# Fetch data from the collection and convert ObjectId to strings
+data = list(collection.find())
+for document in data:
+    document['_id'] = str(document['_id'])
+
+# Check the document count in the collection
+document_count = collection.count_documents({})  # Count all documents
+print(f'Total documents in collection: {document_count}')
+
+# Close the MongoDB connection
+client.close()
+
+# Define the output JSON file name
+output_file_name = 'test data/test data_2023/output.json'
+
+# Write the data to a JSON file
+with open(output_file_name, 'w') as output_file:
+    json.dump(data, output_file, indent=4)
+print("data succesfully fetched")
 years = list(range(2013, 2024))  # Update the range according to your years
 
 # Load the saved One-Class SVM model
 one_class_svm_model = joblib.load('trained model/one_class_svm_model.pkl')
 
 # Create the directory if it doesn't exist
-output_directory = 'testing results/2023/'
+output_directory = 'testing results/2021/'
 os.makedirs(output_directory, exist_ok=True)
 
 for year in years:
