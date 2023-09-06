@@ -5,6 +5,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import joblib
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import pymongo
+import json
 from bson import ObjectId
 
 # MongoDB server connection parameters
