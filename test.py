@@ -46,6 +46,37 @@ output_file_name = 'test data/test data_2023/output.json'
 with open(output_file_name, 'w') as output_file:
     json.dump(data, output_file, indent=4)
 print("data succesfully fetched")
+json_files_pattern = output_file_name
+
+# Get a list of JSON file paths that match the pattern
+json_file_paths = glob.glob(json_files_pattern)
+
+# Initialize an empty list to store DataFrames
+dfs = []
+
+# Loop through each JSON file path and convert to DataFrame
+for json_file_path in json_file_paths:
+    with open(json_file_path, 'r') as file:
+        json_data = json.load(file)
+
+    # Convert JSON data to a DataFrame and append to the list
+    df = pd.json_normalize(json_data)
+    dfs.append(df)
+
+# Concatenate the list of DataFrames into one
+result_df = pd.concat(dfs, ignore_index=True)
+result_df['failure'] = 1
+# Specify the path to the output CSV file
+output_csv_file = 'test data/test data_2023/results.csv'
+
+# Save the DataFrame with the new column to a new CSV file
+try:
+    df.to_csv(output_csv_file, index=False)
+    print(f"Data with 'failure' column added successfully saved to '{output_csv_file}'")
+except Exception as e:
+    print(f"Error saving CSV file: {e}")
+    exit(1)
+
 years = list(range(2013, 2024))  # Update the range according to your years
 
 # Load the saved One-Class SVM model
