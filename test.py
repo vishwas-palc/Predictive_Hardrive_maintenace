@@ -15,7 +15,7 @@ from bson import ObjectId
 host = '172.27.1.162'  # Change this to your MongoDB server host
 port = 27017        # Change this to your MongoDB server port
 database_name = 'SMART'
-collection_name = 'sda'
+collection_name = 'sdc_172.27.1.162'
 username = 'mongoadmin'
 password = 'bdung'
 
