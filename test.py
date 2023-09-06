@@ -39,45 +39,55 @@ print(f'Total documents in collection: {document_count}')
 # Close the MongoDB connection
 client.close()
 
-# Define the output JSON file name
-output_file_name = 'test data/test data_2023/output.json'
+# Add the "failure" column to the data
+for document in data:
+    document['failure'] = 1
 
-# Write the data to a JSON file
-with open(output_file_name, 'w') as output_file:
-    json.dump(data, output_file, indent=4)
-print("data succesfully fetched")
-json_files_pattern = output_file_name
+# Create a DataFrame from the modified data
+df_year_latest = pd.json_normalize(data)
+selected_latest_year = [
+    "smart_198_raw",
+    "smart_197_raw",
+    "smart_187_raw",
+    "smart_5_raw"
+]
+year=2023
+df_year_latest.fillna(-1, inplace=True)
+df_year_failure = df_year_latest[selected_latest_year]
+x_year = df_year_failure
 
-# Get a list of JSON file paths that match the pattern
-json_file_paths = glob.glob(json_files_pattern)
+anomaly_predictions_year = one_class_svm_model.predict(x_year)
 
-# Initialize an empty list to store DataFrames
-dfs = []
+df_year_latest['predicted_failure'] = [1 if pred == -1 else 0 for pred in anomaly_predictions_year]
+y_year_prediction = df_year_latest['predicted_failure']
+y_test=df_year_latest['failure']
+accuracy = accuracy_score(y_test, y_year_prediction)
+precision = precision_score(y_test, y_year_prediction)
+recall = recall_score(y_test, y_year_prediction)
+f1 = f1_score(y_test, y_year_prediction)
+    
+print(f"Anomaly Detection of year {year} Accuracy:", accuracy)
+print(f"Anomaly Detection of year {year} Precision:", precision)
+print(f"Anomaly Detection of year {year} Recall:", recall)
+print(f"Anomaly Detection of year {year} F1-score:", f1)
 
-# Loop through each JSON file path and convert to DataFrame
-for json_file_path in json_file_paths:
-    with open(json_file_path, 'r') as file:
-        json_data = json.load(file)
+pivot_table = df_year_latest.pivot_table(index='failure', columns='predicted_failure', aggfunc='size', fill_value=0)
+sns.set_palette("viridis")
 
-    # Convert JSON data to a DataFrame and append to the list
-    df = pd.json_normalize(json_data)
-    dfs.append(df)
+plt.figure(figsize=(10, 8))
+sns.heatmap(pivot_table, annot=True, fmt="d", cmap="viridis")
 
-# Concatenate the list of DataFrames into one
-result_df = pd.concat(dfs, ignore_index=True)
-result_df['failure'] = 1
-# Specify the path to the output CSV file
-output_csv_file = 'test data/test data_2023/results.csv'
+plt.xlabel('Predicted Column')
+plt.ylabel('Target Column')
+plt.title(f'Heat Map of Target {year} Column vs. Predicted Column')
 
-# Save the DataFrame with the new column to a new CSV file
-try:
-    df.to_csv(output_csv_file, index=False)
-    print(f"Data with 'failure' column added successfully saved to '{output_csv_file}'")
-except Exception as e:
-    print(f"Error saving CSV file: {e}")
-    exit(1)
+# Save the plot as an SVG file
+svg_filename = os.path.join(output_directory, f'heatmap_{year}.svg')
+plt.savefig(svg_filename, format='svg', bbox_inches='tight')
 
-years = list(range(2013, 2024))  # Update the range according to your years
+plt.show()
+
+"""years = list(range(2013, 2024))  # Update the range according to your years
 
 # Load the saved One-Class SVM model
 one_class_svm_model = joblib.load('trained model/one_class_svm_model.pkl')
@@ -138,4 +148,4 @@ for year in years:
     svg_filename = os.path.join(output_directory, f'heatmap_{year}.svg')
     plt.savefig(svg_filename, format='svg', bbox_inches='tight')
 
-    plt.show()
+    plt.show()"""
