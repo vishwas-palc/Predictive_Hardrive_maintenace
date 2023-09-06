@@ -9,7 +9,6 @@ import pymongo
 import json
 from bson import ObjectId
 
-# MongoDB server connection parameters
 host = '172.27.1.162'  # Change this to your MongoDB server host
 port = 27017        # Change this to your MongoDB server port
 database_name = 'SMART'
@@ -38,11 +37,13 @@ print(f'Total documents in collection: {document_count}')
 
 # Close the MongoDB connection
 client.close()
+
 one_class_svm_model = joblib.load('trained model/one_class_svm_model.pkl')
 
 # Create the directory if it doesn't exist
 output_directory = 'testing results/2021/'
 os.makedirs(output_directory, exist_ok=True)
+
 # Add the "failure" column to the data
 for document in data:
     document['failure'] = 1
@@ -55,40 +56,29 @@ selected_latest_year = [
     "smart_187_raw",
     "smart_5_raw"
 ]
-year=2023
+year = 2023
 df_year_latest.fillna(-1, inplace=True)
 df_year_failure = df_year_latest[selected_latest_year]
 x_year = df_year_failure
 
 anomaly_predictions_year = one_class_svm_model.predict(x_year)
 
-df_year_latest['predicted_failure'] = [1 if pred == -1 else 0 for pred in anomaly_predictions_year]
-y_year_prediction = df_year_latest['predicted_failure']
-y_test=df_year_latest['failure']
-accuracy = accuracy_score(y_test, y_year_prediction)
-precision = precision_score(y_test, y_year_prediction)
-recall = recall_score(y_test, y_year_prediction)
-f1 = f1_score(y_test, y_year_prediction)
-    
-print(f"Anomaly Detection of year {year} Accuracy:", accuracy)
-print(f"Anomaly Detection of year {year} Precision:", precision)
-print(f"Anomaly Detection of year {year} Recall:", recall)
-print(f"Anomaly Detection of year {year} F1-score:", f1)
+# Create a DataFrame containing only '_id' and 'predicted_failure' columns
+result_df = pd.DataFrame({'_id': df_year_latest['_id'], 'critical': [1 if pred == -1 else 0 for pred in anomaly_predictions_year]})
 
-pivot_table = df_year_latest.pivot_table(index='failure', columns='predicted_failure', aggfunc='size', fill_value=0)
-sns.set_palette("viridis")
+# Save the result DataFrame as a CSV file (optional)
+result_csv_file = os.path.join(output_directory, f'critical_{year}.csv')
+result_df.to_csv(result_csv_file, index=False)
 
-plt.figure(figsize=(10, 8))
-sns.heatmap(pivot_table, annot=True, fmt="d", cmap="viridis")
+# Show the result DataFrame
+print(result_df)
 
-plt.xlabel('Predicted Column')
-plt.ylabel('Target Column')
-plt.title(f'Heat Map of Target {year} Column vs. Predicted Column')
-
-# Save the plot as an SVG file
-svg_filename = os.path.join(output_directory, f'heatmap_{year}.svg')
-plt.savefig(svg_filename, format='svg', bbox_inches='tight')
-
+# Create a plot to visualize the 'critical' column (1 for critical anomalies)
+plt.figure(figsize=(8, 6))
+sns.countplot(x='critical', data=result_df, palette='viridis')
+plt.xlabel('Critical Anomaly')
+plt.ylabel('Count')
+plt.title(f'Critical Anomalies in {year}')
 plt.show()
 
 """years = list(range(2013, 2024))  # Update the range according to your years
