@@ -9,6 +9,9 @@ import pymongo
 import json
 from bson import ObjectId
 
+
+
+# MongoDB server connection parameters
 host = '172.27.1.162'  # Change this to your MongoDB server host
 port = 27017        # Change this to your MongoDB server port
 database_name = 'SMART'
@@ -64,22 +67,26 @@ x_year = df_year_failure
 anomaly_predictions_year = one_class_svm_model.predict(x_year)
 
 # Create a DataFrame containing only '_id' and 'predicted_failure' columns
-result_df = pd.DataFrame({'_id': df_year_latest['_id'], 'critical': [1 if pred == -1 else 0 for pred in anomaly_predictions_year]})
+result_df = pd.DataFrame({'_id': df_year_latest['_id'], 'predicted_failure': anomaly_predictions_year})
+
+# Rename the 'predicted_failure' column values
+result_df['predicted_failure'] = result_df['predicted_failure'].apply(lambda x: 'critical' if x == 1 else 'not critical')
 
 # Save the result DataFrame as a CSV file (optional)
-result_csv_file = os.path.join(output_directory, f'critical_{year}.csv')
+result_csv_file = os.path.join(output_directory, f'predicted_failure_{year}.csv')
 result_df.to_csv(result_csv_file, index=False)
 
 # Show the result DataFrame
 print(result_df)
 
-# Create a plot to visualize the 'critical' column (1 for critical anomalies)
+# Create a plot to visualize the 'predicted_failure' column
 plt.figure(figsize=(8, 6))
-sns.countplot(x='critical', data=result_df, palette='viridis')
-plt.xlabel('Critical Anomaly')
+sns.countplot(x='predicted_failure', data=result_df, palette='viridis')
+plt.xlabel('Predicted Failure')
 plt.ylabel('Count')
-plt.title(f'Critical Anomalies in {year}')
+plt.title(f'Predicted Failures in {year}')
 plt.show()
+
 
 """years = list(range(2013, 2024))  # Update the range according to your years
 
