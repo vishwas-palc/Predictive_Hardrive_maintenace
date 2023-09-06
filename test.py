@@ -50,6 +50,7 @@ os.makedirs(output_directory, exist_ok=True)
 # Add the "failure" column to the data
 for document in data:
     document['failure'] = 1
+    document['smart_187_raw']=-1
 
 # Create a DataFrame from the modified data
 df_year_latest = pd.json_normalize(data)
