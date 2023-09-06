@@ -38,7 +38,11 @@ print(f'Total documents in collection: {document_count}')
 
 # Close the MongoDB connection
 client.close()
+one_class_svm_model = joblib.load('trained model/one_class_svm_model.pkl')
 
+# Create the directory if it doesn't exist
+output_directory = 'testing results/2021/'
+os.makedirs(output_directory, exist_ok=True)
 # Add the "failure" column to the data
 for document in data:
     document['failure'] = 1
