@@ -61,9 +61,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 """if load_saved_model:
     loaded_model = joblib.load('/content/sample_data/trained model/one_class_svm_model_2021.pkl')
 else:"""
-one_class_svm_model = OneClassSVM(nu=0.009)
+one_class_svm_model = OneClassSVM(nu=0.00009)
 one_class_svm_model.fit(X_train)
-joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model.pkl')  # Save the trained model
+joblib.dump(one_class_svm_model, 'trained model/one_class_svm_model.pkl')  # Save the trained model
 print("data is trained and saved")
 """# Predict anomalies on the test data
 if load_saved_model:
