@@ -64,7 +64,7 @@ else:"""
 one_class_svm_model = OneClassSVM(nu=0.009)
 one_class_svm_model.fit(X_train)
 joblib.dump(one_class_svm_model, '/trained model/one_class_svm_model.pkl')  # Save the trained model
-
+print("data is trained and saved")
 """# Predict anomalies on the test data
 if load_saved_model:
     anomaly_predictions = loaded_model.predict(X_test)
